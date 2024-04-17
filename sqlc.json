@@ -12,7 +12,7 @@
       "path": "internal/database/dao",
       "engine": "sqlite",
       "database": {
-        "uri": "file://./db.sqlite"
+        "uri": "file:ondeck?mode=memory&cache=shared"
       },
       "rules": [
         "sqlc/db-prepare"

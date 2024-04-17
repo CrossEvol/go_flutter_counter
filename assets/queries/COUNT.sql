@@ -1,34 +1,34 @@
 -- name: GetCountValue :one
-SELECT `value` FROM `COUNT` WHERE `key` = 'counter' LIMIT 1;
+SELECT value FROM COUNT WHERE `key` = 'counter' LIMIT 1;
 
 -- name: InitCountValue :execresult
-INSERT INTO `COUNT` (
+INSERT INTO COUNT (
   `key`,
-  `value`,
+  value,
   `updated_at`
 ) VALUES (
- 'config',
+ 'counter',
   0 ,
   CURRENT_TIMESTAMP
 );
 
 -- name: IncrementCountValue :exec
-UPDATE `COUNT`
+UPDATE COUNT
 SET 
-  `value` = `value` + 1 ,
+  value = value + 1 ,
   `updated_at` = CURRENT_TIMESTAMP
 WHERE `key` = 'counter';
 
 -- name: DecrementCountValue :exec
-UPDATE `COUNT`
+UPDATE COUNT
 SET
-    `value` = `value` - 1 ,
+    value = value - 1 ,
     `updated_at` = CURRENT_TIMESTAMP
 WHERE `key` = 'counter';
 
 -- name: ResetCountValue :exec
-UPDATE `COUNT`
+UPDATE COUNT
 SET
-    `value` = 0 ,
+    value = 0 ,
     `updated_at` = CURRENT_TIMESTAMP
 WHERE `key` = 'counter';
