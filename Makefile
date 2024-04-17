@@ -93,6 +93,12 @@ migrations/goto:
 migrations/force:
 	go run -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="sqlite3://db.sqlite" force ${version}
 
+## migrations/drop : Drop everything inside database
+.PHONY: migrations/drop
+migrations/drop:
+	go run -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="sqlite3://db.sqlite" drop
+
+
 ## migrations/version: print the current in-use migration version
 .PHONY: migrations/version
 migrations/version:
