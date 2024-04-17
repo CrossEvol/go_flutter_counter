@@ -53,7 +53,7 @@ INSERT INTO COUNT (
   value,
   ` + "`" + `updated_at` + "`" + `
 ) VALUES (
- 'config',
+ 'counter',
   0 ,
   CURRENT_TIMESTAMP
 )
