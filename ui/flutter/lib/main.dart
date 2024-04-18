@@ -70,6 +70,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle outlineButtonStyle = OutlinedButton.styleFrom(
+      backgroundColor: Colors.blue[200],
+      foregroundColor: Colors.black87,
+      minimumSize: const Size(88, 36),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+    ).copyWith(
+      side: MaterialStateProperty.resolveWith<BorderSide?>(
+        (Set<MaterialState> states) {
+          if (states.contains(MaterialState.pressed)) {
+            return BorderSide(
+              color: Theme.of(context).colorScheme.secondary,
+              width: 1,
+            );
+          }
+          return null;
+        },
+      ),
+    );
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -112,6 +134,14 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            OutlinedButton(
+              style: outlineButtonStyle,
+              onPressed: () {},
+              child: const Text('Reset Count'),
+            )
           ],
         ),
       ),
