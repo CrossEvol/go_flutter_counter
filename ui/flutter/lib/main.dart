@@ -5,7 +5,7 @@ import 'api/api.dart' as api;
 
 void main() async {
   await init();
-  var result =await api.getCounter();
+  var result = await api.getCounter();
   runApp(ChangeNotifierProvider(
     create: (context) => CountModel(result.count),
     child: const MyApp(),
@@ -158,37 +158,49 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                OutlinedButton(
-                    onPressed: () async {
-                      await api.incrementCounter();
-                      await _fetchCount;
-                    },
-                    child: const Icon(Icons.add)),
+                Consumer<CountModel>(builder: (ctx, cm, child) {
+                  return OutlinedButton(
+                      onPressed: () async {
+                        await api.incrementCounter();
+                        var result = await api.getCounter();
+                        cm.count = result.count;
+                      },
+                      child: const Icon(Icons.add));
+                }),
                 const SizedBox(
                   width: 20,
                 ),
-                OutlinedButton(
-                    onPressed: () async {
-                      await api.decrementCounter();
-                      await _fetchCount;
-                    },
-                    child: const Icon(Icons.remove)),
+                Consumer<CountModel>(builder: (ctx, cm, child) {
+                  return OutlinedButton(
+                      onPressed: () async {
+                        await api.decrementCounter();
+                        var result = await api.getCounter();
+                        cm.count = result.count;
+                      },
+                      child: const Icon(Icons.remove));
+                }),
               ],
             ),
             const SizedBox(
               height: 10,
             ),
-            OutlinedButton(
-              style: outlineButtonStyle,
-              onPressed: () {},
-              child: const Text('Reset Count'),
-            )
+            Consumer<CountModel>(builder: (ctx, cm, child) {
+              return OutlinedButton(
+                style: outlineButtonStyle,
+                onPressed: () async {
+                  await api.resetCounter();
+                  var result = await api.getCounter();
+                  cm.count = result.count;
+                },
+                child: const Text('Reset Count'),
+              );
+            })
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        tooltip: 'Increment',
+        tooltip: 'Question???',
         child: const Icon(Icons.question_mark),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
