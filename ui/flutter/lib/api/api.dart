@@ -15,7 +15,7 @@ class _Client {
     if (_instance == null) {
       _instance = _Client._internal();
       var dio = Dio();
-      var baseUrl = 'http://127.0.0.1/4444';
+      var baseUrl = 'http://127.0.0.1:4444';
       dio.options.baseUrl = baseUrl;
       dio.options.contentType = Headers.jsonContentType;
       dio.options.sendTimeout = const Duration(seconds: 5);
@@ -48,11 +48,13 @@ void init(String network, String address, String apiToken) {
 
 Future<T> _parse<T>(
   Future<Response> Function() fetch,
+  T Function(dynamic json)? fromJsonT,
 ) async {
   try {
     var resp = await fetch();
+    fromJsonT ??= (json) => null as T;
     if (resp.statusCode == 200) {
-      return resp.data;
+      return fromJsonT(resp.data);
     } else {
       throw Exception();
     }
@@ -66,24 +68,24 @@ Future<T> _parse<T>(
   }
 }
 
-Future<void> status() async {
-  return _parse<void>(() => _client.dio.get('/status'));
+Future<GetStatusResult> status() async {
+  return _parse<GetStatusResult>(() => _client.dio.get('/status'),
+      (data) => GetStatusResult.fromJson(data));
 }
 
 Future<GetCounterResult> getCounter() async {
-  return _parse<GetCounterResult>(() => _client.dio.get('/counter'));
+  return _parse<GetCounterResult>(() => _client.dio.get('/counter'),
+      (data) => GetCounterResult.fromJson(data));
 }
 
 Future<void> incrementCounter() async {
-  return _parse<void>(() => _client.dio.put('/counter/increment'));
+  return _parse<void>(() => _client.dio.put('/counter/increment'), null);
 }
 
 Future<void> decrementCounter() async {
-  return _parse<void>(() => _client.dio.put('/counter/decrement'));
+  return _parse<void>(() => _client.dio.put('/counter/decrement'), null);
 }
 
 Future<void> resetCounter() async {
-  return _parse<void>(() => _client.dio.put('/counter/reset'));
+  return _parse<void>(() => _client.dio.delete('/counter/reset'), null);
 }
-
-
