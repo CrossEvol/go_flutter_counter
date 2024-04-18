@@ -8,11 +8,12 @@ import (
 )
 
 func (app *application) status(w http.ResponseWriter, r *http.Request) {
-	data := map[string]string{
-		"Status": "OK",
+
+	type GetStatusResult struct {
+		Status string `json:"status"`
 	}
 
-	err := response.JSON(w, http.StatusOK, data)
+	err := response.JSON(w, http.StatusOK, GetStatusResult{Status: "OK"})
 	if err != nil {
 		app.serverError(w, r, err)
 	}
