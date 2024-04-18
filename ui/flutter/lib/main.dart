@@ -158,6 +158,21 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(
               height: 10,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                OutlinedButton(onPressed: () {}, child: const Icon(Icons.add)),
+                const SizedBox(
+                  width: 20,
+                ),
+                OutlinedButton(
+                    onPressed: () {}, child: const Icon(Icons.remove)),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             OutlinedButton(
               style: outlineButtonStyle,
               onPressed: () {},
@@ -167,9 +182,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {},
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.question_mark),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
