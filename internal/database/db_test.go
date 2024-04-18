@@ -33,6 +33,7 @@ func (suite *DatabaseTestSuite) SetupSuite() {
 }
 
 func (suite *DatabaseTestSuite) TearDownSuite() {
+	queries.Close()
 	db.Close()
 }
 

@@ -1,8 +1,13 @@
 package main
 
 import (
+	"context"
+	"database/sql"
+	"errors"
 	"flag"
 	"fmt"
+	"github.com/crossevol/go_flutter_counter/internal/database/dao"
+	"log"
 	"log/slog"
 	"os"
 	"runtime/debug"
@@ -39,10 +44,11 @@ type config struct {
 }
 
 type application struct {
-	config config
-	db     *database.DB
-	logger *slog.Logger
-	wg     sync.WaitGroup
+	config  config
+	db      *database.DB
+	queries *dao.Queries
+	logger  *slog.Logger
+	wg      sync.WaitGroup
 }
 
 func run(logger *slog.Logger) error {
@@ -68,11 +74,21 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	defer db.Close()
+	queries := dao.New(db)
+	if _, err := queries.GetCountValue(context.Background()); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			if _, err := queries.InitCountValue(context.Background()); err != nil {
+				log.Fatal("Failed to init the counter value...")
+			}
+		}
+	}
+	defer queries.Close()
 
 	app := &application{
-		config: cfg,
-		db:     db,
-		logger: logger,
+		config:  cfg,
+		db:      db,
+		queries: queries,
+		logger:  logger,
 	}
 
 	return app.serveHTTP()
