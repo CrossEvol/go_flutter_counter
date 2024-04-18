@@ -49,6 +49,7 @@ type application struct {
 	queries *dao.Queries
 	logger  *slog.Logger
 	wg      sync.WaitGroup
+	ctx     *context.Context
 }
 
 func run(logger *slog.Logger) error {
@@ -69,15 +70,16 @@ func run(logger *slog.Logger) error {
 		return nil
 	}
 
+	ctx := context.Background()
 	db, err := database.New(cfg.db.dsn, cfg.db.automigrate)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 	queries := dao.New(db)
-	if _, err := queries.GetCountValue(context.Background()); err != nil {
+	if _, err := queries.GetCountValue(ctx); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			if _, err := queries.InitCountValue(context.Background()); err != nil {
+			if _, err := queries.InitCountValue(ctx); err != nil {
 				log.Fatal("Failed to init the counter value...")
 			}
 		}
@@ -89,6 +91,7 @@ func run(logger *slog.Logger) error {
 		db:      db,
 		queries: queries,
 		logger:  logger,
+		ctx:     &ctx,
 	}
 
 	return app.serveHTTP()

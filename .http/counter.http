@@ -1,0 +1,25 @@
+PUT http://localhost:4444/counter/increment
+Content-Type: application/json
+
+{}
+
+###
+
+PUT http://localhost:4444/counter/decrement
+Content-Type: application/json
+
+{}
+
+###
+
+
+DELETE http://localhost:4444/counter/reset
+Content-Type: application/json
+
+{}
+
+###
+
+GET http://localhost:4444/counter
+Accept: application/json
+###

@@ -16,5 +16,12 @@ func (app *application) routes() http.Handler {
 
 	mux.Get("/status", app.status)
 
+	mux.Route("/counter", func(r chi.Router) {
+		r.Get("/", app.getCountValue)
+		r.Put("/increment", app.incrementCount)
+		r.Put("/decrement", app.decrementCount)
+		r.Delete("/reset", app.resetCount)
+	})
+
 	return mux
 }
