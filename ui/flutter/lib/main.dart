@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'api/api.dart' as api;
 
-void main() {
+void main() async {
+  await init();
   runApp(const MyApp());
+}
+
+Future<void> init() async {
+  api.init('', '', '');
 }
 
 class MyApp extends StatelessWidget {
@@ -55,6 +61,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late Future<int> _fetchCount;
   int _counter = 0;
 
   void _incrementCounter() {
@@ -130,10 +137,24 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            FutureBuilder(
+                future: _fetchCount,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(); // Show loading indicator
+                  } else if (snapshot.hasError) {
+                    return Text(
+                        'Error: ${snapshot.error}'); // Show error message
+                  } else {
+                    final data =
+                        snapshot.data!; // Safe access after checking hasError
+                    // Use data to display information in your UI
+                    return Text(
+                      '$data',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ); // Example: Display a property
+                  }
+                }),
             const SizedBox(
               height: 10,
             ),
@@ -151,5 +172,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCount = fetchCountValue();
+  }
+
+  Future<int> fetchCountValue() async {
+    var result = await api.getCounter();
+    return result.count;
   }
 }

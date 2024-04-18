@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-
 import 'model.dart';
 
 class _Client {
