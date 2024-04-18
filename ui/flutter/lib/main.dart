@@ -1,9 +1,15 @@
+import 'package:counter/models/count.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'api/api.dart' as api;
 
 void main() async {
   await init();
-  runApp(const MyApp());
+  var result =await api.getCounter();
+  runApp(ChangeNotifierProvider(
+    create: (context) => CountModel(result.count),
+    child: const MyApp(),
+  ));
 }
 
 Future<void> init() async {
@@ -137,24 +143,14 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            FutureBuilder(
-                future: _fetchCount,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(); // Show loading indicator
-                  } else if (snapshot.hasError) {
-                    return Text(
-                        'Error: ${snapshot.error}'); // Show error message
-                  } else {
-                    final data =
-                        snapshot.data!; // Safe access after checking hasError
-                    // Use data to display information in your UI
-                    return Text(
-                      '$data',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ); // Example: Display a property
-                  }
-                }),
+            Consumer<CountModel>(
+                // future: _fetchCount,
+                builder: (context, cm, child) {
+              return Text(
+                '${cm.count}',
+                style: Theme.of(context).textTheme.headlineMedium,
+              );
+            }),
             const SizedBox(
               height: 10,
             ),
@@ -162,12 +158,21 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                OutlinedButton(onPressed: () {}, child: const Icon(Icons.add)),
+                OutlinedButton(
+                    onPressed: () async {
+                      await api.incrementCounter();
+                      await _fetchCount;
+                    },
+                    child: const Icon(Icons.add)),
                 const SizedBox(
                   width: 20,
                 ),
                 OutlinedButton(
-                    onPressed: () {}, child: const Icon(Icons.remove)),
+                    onPressed: () async {
+                      await api.decrementCounter();
+                      await _fetchCount;
+                    },
+                    child: const Icon(Icons.remove)),
               ],
             ),
             const SizedBox(
