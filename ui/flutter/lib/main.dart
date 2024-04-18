@@ -69,6 +69,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late Future<int> _fetchCount;
   int _counter = 0;
+  late Future<String> _fetchStatus;
+  String status = '';
 
   void _incrementCounter() {
     setState(() {
@@ -198,10 +200,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Question???',
-        child: const Icon(Icons.question_mark),
+      floatingActionButton: FutureBuilder<String>(
+        future: _fetchStatus,
+        builder: (context, snapshot) {
+          return FloatingActionButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  action: SnackBarAction(
+                    label: 'Close',
+                    onPressed: () {
+                      // Code to execute.
+                    },
+                  ),
+                  content: snapshot.error == null
+                      ? Text('Status is ${snapshot.data!}')
+                      : const Text('Server has not been ready...'),
+                  // content: const Text('Status is OK'),
+                  duration: const Duration(milliseconds: 1500),
+                  width: 280.0,
+                  // Width of the SnackBar.
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0, // Inner padding for SnackBar content.
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              );
+            },
+            tooltip: 'Status???',
+            child: const Icon(Icons.signal_wifi_statusbar_4_bar),
+          );
+        },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -210,10 +242,16 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _fetchCount = fetchCountValue();
+    _fetchStatus = fetchStatus();
   }
 
   Future<int> fetchCountValue() async {
     var result = await api.getCounter();
     return result.count;
+  }
+
+  Future<String> fetchStatus() async {
+    var result = await api.status();
+    return result.status;
   }
 }
