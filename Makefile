@@ -8,6 +8,13 @@ help:
 	@echo 'Usage:'
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 
+# ==================================================================================== #
+# PRODUCTION
+# ==================================================================================== #
+
+.PHONY: build dll
+build/dll:
+	go build -tags nosqlite -ldflags="-w -s" -buildmode=c-shared -o ui/flutter/include/http_server.dll github.com/crossevol/go_flutter_counter/cmd/api
 
 # ==================================================================================== #
 # QUALITY CONTROL
