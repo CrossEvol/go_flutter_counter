@@ -8,3 +8,7 @@ help: ## Know all commands.
 
 gen: ## Generate the *.g.dart
 	dart run build_runner build
+
+.PHONY: ffigen
+ffigen:
+	dart run ffigen --config ffigen.yaml
