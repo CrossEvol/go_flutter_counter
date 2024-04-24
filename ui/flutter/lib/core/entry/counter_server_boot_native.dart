@@ -17,17 +17,17 @@ class CounterServerBootNative implements CounterServerBoot {
   @override
   Future<int> start() async {
     if (Platform.isWindows) {
-      var libraryPath = 'http_server.dll';
-      _counterServer = CounterServerFFi(
-          HttpServerBind(ffi.DynamicLibrary.open(libraryPath)));
+      return await Isolate.run(() async {
+        var libraryPath = 'http_server.dll';
+        _counterServer = CounterServerFFi(
+            HttpServerBind(ffi.DynamicLibrary.open(libraryPath)));
+        return await _counterServer.start();
+      });
     } else if (Platform.isAndroid) {
       _counterServer = CounterServerChannel();
+      return _counterServer.start();
     }
-    var i = await _counterServer.start();
-    print(i);
-
-    return i;
-    // return await Isolate.run(() async => await _counterServer.start());
+    return 0;
   }
 
   @override
