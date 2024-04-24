@@ -1,5 +1,5 @@
 # dart run ffigen
-name: HttpServer
+name: HttpServerBind
 description: Bindings to http_server library.
 output: 'lib/core/ffi/http_server_bind.dart'
 llvm-path:
