@@ -1,15 +1,15 @@
-package http_server
+package HttpServer
 
 // #cgo LDFLAGS: -static-libstdc++
 import "C"
 import "github.com/crossevol/go_flutter_counter/cmd/api"
 
-func Start(config string) (int, string) {
+func Start(config string) (int, error) {
 	port, err := api.StartServer(config)
 	if err != nil {
-		return 0, err.Error()
+		return 0, err
 	}
-	return port, ""
+	return port, nil
 }
 
 func Stop() {

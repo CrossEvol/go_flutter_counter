@@ -16,6 +16,9 @@ help:
 build/dll:
 	go build -tags nosqlite -ldflags="-w -s" -buildmode=c-shared -o ui/flutter/include/http_server.dll github.com/crossevol/go_flutter_counter/bind/desktop
 
+build/apk:
+	gomobile bind -tags nosqlite -ldflags="-w -s" -o ui/flutter/android/app/libs/HttpServer.aar -target=android -androidapi 19 -javapkg="com.crossevol" github.com/crossevol/go_flutter_counter/bind/mobile
+
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #

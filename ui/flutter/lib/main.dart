@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'api/api.dart' as api;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   var port = await CounterServerBoot.instance.start();
 
   await init(port);

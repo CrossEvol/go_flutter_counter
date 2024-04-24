@@ -103,3 +103,6 @@ func (app *application) logRequestInfo(next http.Handler) http.Handler {
 	})
 }
 ```
+
+## can run in debug, can not run after build 
+may be should use foreground_task?
