@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"context"
@@ -20,7 +20,7 @@ import (
 	"github.com/lmittmann/tint"
 )
 
-func main() {
+func Run() {
 	logger := slog.New(tint.NewHandler(os.Stdout, &tint.Options{Level: slog.LevelDebug}))
 
 	err := run(logger)

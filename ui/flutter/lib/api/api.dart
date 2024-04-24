@@ -8,11 +8,12 @@ class _Client {
 
   _Client._internal();
 
-  factory _Client(String network, String address, String apiToken) {
+  factory _Client(String network, String address, String apiToken,
+      {required int port}) {
     if (_instance == null) {
       _instance = _Client._internal();
       var dio = Dio();
-      var baseUrl = 'http://127.0.0.1:4444';
+      var baseUrl = 'http://127.0.0.1:$port';
       dio.options.baseUrl = baseUrl;
       dio.options.contentType = Headers.jsonContentType;
       dio.options.sendTimeout = const Duration(seconds: 5);
@@ -39,8 +40,9 @@ class TimeoutException implements Exception {
 
 late _Client _client;
 
-void init(String network, String address, String apiToken) {
-  _client = _Client(network, address, apiToken);
+void init(String network, String address, String apiToken,
+    {required int port}) {
+  _client = _Client(network, address, apiToken, port: port);
 }
 
 Future<T> _parse<T>(

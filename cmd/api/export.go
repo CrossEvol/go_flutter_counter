@@ -1,9 +1,10 @@
-package main
+package api
 
 import "C"
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -21,12 +22,19 @@ import (
 
 var srv *http.Server
 
-//export StartDesktopServer
-func StartDesktopServer() (int, *C.char) {
+type StartConfig struct {
+	DatabaseUrl string `json:"database_url"`
+}
+
+func StartServer(startConfigJson string) (int, error) {
+	var startConfig StartConfig
+	if err := json.Unmarshal([]byte(startConfigJson), &startConfig); err != nil {
+		return 0, err
+	}
 	var cfg config
 
 	cfg.cookie.secretKey = env.GetString("COOKIE_SECRET_KEY", "dtpbuthu2n774ayzvnotzhakebjn2hpw")
-	cfg.db.dsn = env.GetString("DB_DSN", "db.sqlite")
+	cfg.db.dsn = env.GetString("DB_DSN", startConfig.DatabaseUrl)
 	cfg.db.automigrate = env.GetBool("DB_AUTOMIGRATE", true)
 
 	showVersion := flag.Bool("version", false, "display version and exit")
@@ -40,7 +48,7 @@ func StartDesktopServer() (int, *C.char) {
 	ctx := context.Background()
 	db, err := database.New(cfg.db.dsn, cfg.db.automigrate)
 	if err != nil {
-		return 0, C.CString(err.Error())
+		return 0, err
 	}
 	defer db.Close()
 	queries := dao.New(db)
@@ -72,7 +80,7 @@ func StartDesktopServer() (int, *C.char) {
 
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
-		return 0, C.CString(err.Error())
+		return 0, err
 	}
 
 	go func() {
@@ -90,8 +98,7 @@ func StartDesktopServer() (int, *C.char) {
 	return port, nil
 }
 
-//export StopDesktopServer
-func StopDesktopServer() {
+func StopServer() {
 	if srv != nil {
 		if err := srv.Shutdown(context.TODO()); err != nil {
 			log.Fatal("shutdown server failed")

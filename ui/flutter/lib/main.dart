@@ -1,10 +1,35 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:counter/core/counter_server_boot.dart';
+import 'package:counter/core/ffi/http_server_bind.dart';
 import 'package:counter/models/count.dart';
+import 'package:counter/models/start_config.dart';
+import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'api/api.dart' as api;
+import 'dart:ffi' as ffi;
+
+void run() {
+  var libraryPath = 'http_server.dll';
+  var exe = HttpServerBind(ffi.DynamicLibrary.open(libraryPath));
+  var result = exe.Start(
+      jsonEncode(StartConfig(databaseUrl: "db.sqlite")).toNativeUtf8().cast());
+  if (result.r1 != ffi.nullptr) {
+    var err = result.r1.cast<Utf8>().toDartString();
+    print(err);
+    throw Exception("Error of Starting Server...");
+  }
+  final port = result.r0;
+  print(port);
+}
 
 void main() async {
-  await init();
+  // run();
+  var port = await CounterServerBoot.instance.start();
+
+  await init(port);
   var result = await api.getCounter();
   runApp(ChangeNotifierProvider(
     create: (context) => CountModel(result.count),
@@ -12,8 +37,8 @@ void main() async {
   ));
 }
 
-Future<void> init() async {
-  api.init('', '', '');
+Future<void> init(int port) async {
+  api.init('', '', '', port: port);
 }
 
 class MyApp extends StatelessWidget {

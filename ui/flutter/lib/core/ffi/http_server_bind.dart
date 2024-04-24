@@ -857,24 +857,27 @@ class HttpServerBind {
   late final __FCmulcr =
       __FCmulcrPtr.asFunction<_Fcomplex Function(_Fcomplex, double)>();
 
-  StartDesktopServer_return StartDesktopServer() {
-    return _StartDesktopServer();
+  Start_return Start(
+    ffi.Pointer<ffi.Char> config,
+  ) {
+    return _Start(
+      config,
+    );
   }
 
-  late final _StartDesktopServerPtr =
-      _lookup<ffi.NativeFunction<StartDesktopServer_return Function()>>(
-          'StartDesktopServer');
-  late final _StartDesktopServer =
-      _StartDesktopServerPtr.asFunction<StartDesktopServer_return Function()>();
+  late final _StartPtr =
+      _lookup<ffi.NativeFunction<Start_return Function(ffi.Pointer<ffi.Char>)>>(
+          'Start');
+  late final _Start =
+      _StartPtr.asFunction<Start_return Function(ffi.Pointer<ffi.Char>)>();
 
-  void StopDesktopServer() {
-    return _StopDesktopServer();
+  void Stop() {
+    return _Stop();
   }
 
-  late final _StopDesktopServerPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('StopDesktopServer');
-  late final _StopDesktopServer =
-      _StopDesktopServerPtr.asFunction<void Function()>();
+  late final _StopPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function()>>('Stop');
+  late final _Stop = _StopPtr.asFunction<void Function()>();
 }
 
 typedef va_list = ffi.Pointer<ffi.Char>;
@@ -958,7 +961,7 @@ typedef GoInt = GoInt64;
 typedef GoInt64 = ffi.LongLong;
 typedef DartGoInt64 = int;
 
-final class StartDesktopServer_return extends ffi.Struct {
+final class Start_return extends ffi.Struct {
   @GoInt()
   external int r0;
 

@@ -12,26 +12,26 @@ import 'package:counter/core/ffi/http_server_bind.dart';
 CounterServerBoot create() => CounterServerBootNative();
 
 class CounterServerBootNative implements CounterServerBoot {
-  late CounterServerInterface _counterServerInterface;
+  late CounterServerInterface _counterServer;
 
   @override
   Future<int> start() async {
     if (Platform.isWindows) {
       var libraryPath = 'http_server.dll';
-      _counterServerInterface = CounterServerFFi(
+      _counterServer = CounterServerFFi(
           HttpServerBind(ffi.DynamicLibrary.open(libraryPath)));
     } else if (Platform.isAndroid) {
-      _counterServerInterface = CounterServerChannel();
+      _counterServer = CounterServerChannel();
     }
+    var i = await _counterServer.start();
+    print(i);
 
-    return await Isolate.run(() async {
-      var port = _counterServerInterface.start();
-      return port;
-    });
+    return i;
+    // return await Isolate.run(() async => await _counterServer.start());
   }
 
   @override
   Future<void> stop() async {
-    return await _counterServerInterface.stop();
+    return await _counterServer.stop();
   }
 }

@@ -14,7 +14,7 @@ help:
 
 .PHONY: build dll
 build/dll:
-	go build -tags nosqlite -ldflags="-w -s" -buildmode=c-shared -o ui/flutter/include/http_server.dll github.com/crossevol/go_flutter_counter/cmd/api
+	go build -tags nosqlite -ldflags="-w -s" -buildmode=c-shared -o ui/flutter/include/http_server.dll github.com/crossevol/go_flutter_counter/bind/desktop
 
 # ==================================================================================== #
 # QUALITY CONTROL

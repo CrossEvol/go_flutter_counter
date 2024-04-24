@@ -3,7 +3,7 @@ import 'package:counter/api/api.dart';
 
 void main() {
   late int baseCount;
-  init('', '', '');
+  init('', '', '', port: 1);
 
   test('/status API', () async {
     var result = await status();

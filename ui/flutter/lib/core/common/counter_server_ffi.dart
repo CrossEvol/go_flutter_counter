@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:counter/models/start_config.dart';
 import 'package:ffi/ffi.dart';
 import 'package:counter/core/common/counter_server_interface.dart';
 import 'package:counter/core/ffi/http_server_bind.dart';
@@ -13,7 +15,9 @@ class CounterServerFFi implements CounterServerInterface {
   @override
   Future<int> start() {
     var completer = Completer<int>();
-    var result = _httpServerBind.StartDesktopServer();
+    var startConfig = StartConfig(databaseUrl: "dev.db");
+    var result = _httpServerBind.Start(
+        jsonEncode(startConfig).toNativeUtf8().cast());
     if (result.r1 != nullptr) {
       completer.completeError(Exception(result.r1.cast<Utf8>().toDartString()));
     } else {
@@ -25,7 +29,7 @@ class CounterServerFFi implements CounterServerInterface {
   @override
   Future<void> stop() {
     var completer = Completer<void>();
-    _httpServerBind.StopDesktopServer();
+    _httpServerBind.Stop();
     completer.complete();
     return completer.future;
   }
