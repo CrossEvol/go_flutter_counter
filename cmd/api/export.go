@@ -50,7 +50,7 @@ func StartServer(startConfigJson string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer db.Close()
+	//defer db.Close()
 	queries := dao.New(db)
 	if _, err := queries.GetCountValue(ctx); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -59,7 +59,7 @@ func StartServer(startConfigJson string) (int, error) {
 			}
 		}
 	}
-	defer queries.Close()
+	//defer queries.Close()
 
 	logger := slog.New(tint.NewHandler(os.Stdout, &tint.Options{Level: slog.LevelDebug}))
 

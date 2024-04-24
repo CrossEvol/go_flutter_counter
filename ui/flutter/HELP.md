@@ -69,3 +69,37 @@ to solve the problem, can see the document of Isolate:
 
 ```
 
+## Database closed error
+```shell
+Apr 24 20:38:58.257 INF GET /counter 127.0.0.1:14778
+Apr 24 20:38:58.277 ERR sql: database is closed request.method=GET request.url=/counter trace="goroutine 36 [running]:\nruntime/debug.Stack()
+```
+
+## Can see log in the console 
+```shell
+Apr 24 20:40:17.267 INF GET /counter 127.0.0.1:45607
+Apr 24 20:40:17.962 INF GET /status 127.0.0.1:45607
+Apr 24 20:40:20.483 INF PUT /counter/increment 127.0.0.1:45607
+```
+is it related to the log/slog or other?
+```golang
+import (
+	"log"
+	"log/slog"
+	"github.com/lmittmann/tint"
+)
+
+type application struct {
+	logger  *slog.Logger
+}
+
+func (app *application) logRequestInfo(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Log request details
+		app.logger.Info(fmt.Sprintf("%s %s %s", colorized(r.Method), r.URL.Path, r.RemoteAddr))
+
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
+	})
+}
+```
