@@ -27,7 +27,7 @@ class CounterServerBootNative implements CounterServerBoot {
         });
       } else if (Platform.isAndroid) {
         _counterServer = CounterServerChannel();
-        return _counterServer.start();
+        return await _counterServer.start();
       }
     } catch (e) {
       logger.e(e);
